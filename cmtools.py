@@ -65,15 +65,26 @@ class Run:
             coordtime = datetime.strptime(self.data['startTime'], "%Y-%m-%d %H:%M:%S.%f") + timedelta(seconds=coord['timeOffset'])
             #print coordtime
             #print coord['latitude'], coord['longitude'], self.data['startTime'], coord['timeOffset']
-            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(coord['latitude'],coord['longitude'], time=coordtime, elevation=self.find_nearest_altitude(coord['timeOffset'])['altitude']))
+            gpx_segment.points.append(
+                    gpxpy.gpx.GPXTrackPoint(
+                        coord['latitude'],
+                        coord['longitude'],
+                        time=coordtime,
+                        elevation=self.find_nearest_altitude(
+                            coord['timeOffset'])['altitude']
+                        )
+                    )
 
         with open(filename, 'w') as fp:
             fp.write(gpx.to_xml())
 
     def find_nearest_altitude(self, target):
+        if len(self.alts) == 0:
+            return {'altitude': 0}
         #print "Target: {}".format(target)
         pos = bisect_left([x['timeOffset'] for x in self.alts], target)
         if pos == 0:
+            #print "pos 0, self.alts = {}".format(self.alts)
             return self.alts[pos]
         if pos == len(self.alts):
             return self.alts[-1]

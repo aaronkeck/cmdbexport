@@ -9,6 +9,6 @@ for run in cDB.runs:
 
 print len(cDB.runs)
 for run in cDB.runs:
-    run.makegpx("{}.gpx".format(run.data['runID']))
+    run.makegpx("gpx/Exported {}.gpx".format(run.data['startTime']))
 
 
